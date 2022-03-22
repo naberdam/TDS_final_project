@@ -23,8 +23,8 @@ def sigmoid_neuron(X, y, path, epoch, validation_split, batch_size):
 
 
 def train_model_with_unique_values():
-    # new_data, field_names = read_json('./data/type_annotations.json')
-    # convert_json_to_csv(new_data, field_names)
+    new_data, field_names = read_json('./data/type_annotations.json')
+    convert_json_to_csv(new_data, field_names)
     train_list_x_df = pd.read_csv('./data/train_list_x.csv')
     train_list_x_df = train_list_x_df['unique_value_size']
     train_list_y_df = pd.read_csv('./data/train_list_y.csv')
