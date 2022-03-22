@@ -28,32 +28,31 @@ def create_test_list(data: dict, field_list: list):
         df_temp = pd.read_csv(f'data/test_raw_datasets/{KEY_TO_FILE_NAME[file_name]}.csv', keep_default_na=False,
                               low_memory=False)
         df_temp = df_temp.replace({'\'': ''}, regex=True)
+        df_temp = df_temp[field_list[file_name]]
         for field_name in df_temp:
-            if field_name in field_list[file_name]:
-                df_temp[field_name] = pd.to_numeric(df_temp[field_name], errors='coerce')
-                if any(math.isnan(unique_value) for unique_value in df_temp[field_name].unique()):
-                    df_temp[field_name] = df_temp[field_name].dropna().reset_index(drop=True)
-                    if df_temp[field_name].empty:
-                        df_temp = df_temp.drop(field_name, axis=1)
-                        continue
-                print(f'{file_name}_{field_name}    {df_temp[field_name].unique()}')
-                unique_per_num_values = df_temp[field_name].unique().size / df_temp[field_name].count()
-                unique_value_size = df_temp[field_name].unique().size
-                min_value = df_temp[field_name].min()
-                max_value = df_temp[field_name].max()
-                df_temp[field_name] = (df_temp[field_name] - df_temp[field_name].min()) / \
-                                      (df_temp[field_name].max() - df_temp[field_name].min())
-                std_value = df_temp[field_name].std()
-                if math.isnan(std_value):
+            df_temp[field_name] = pd.to_numeric(df_temp[field_name], errors='coerce')
+            if any(math.isnan(unique_value) for unique_value in df_temp[field_name].unique()):
+                df_temp[field_name] = df_temp[field_name].dropna().reset_index(drop=True)
+                if df_temp[field_name].empty:
                     df_temp = df_temp.drop(field_name, axis=1)
-                    # del y_list[-1]
                     continue
-                min_value_list.append(min_value)
-                max_value_list.append(max_value)
-                unique_per_num_values_list.append(unique_per_num_values)
-                unique_value_size_list.append(unique_value_size)
-                std_value_list.append(std_value)
-                train_features_list.append(field_name)
+            unique_per_num_values = df_temp[field_name].unique().size / df_temp[field_name].count()
+            unique_value_size = df_temp[field_name].unique().size
+            min_value = df_temp[field_name].min()
+            max_value = df_temp[field_name].max()
+            df_temp[field_name] = (df_temp[field_name] - df_temp[field_name].min()) / \
+                                  (df_temp[field_name].max() - df_temp[field_name].min())
+            std_value = df_temp[field_name].std()
+            if math.isnan(std_value):
+                df_temp = df_temp.drop(field_name, axis=1)
+                # del y_list[-1]
+                continue
+            min_value_list.append(min_value)
+            max_value_list.append(max_value)
+            unique_per_num_values_list.append(unique_per_num_values)
+            unique_value_size_list.append(unique_value_size)
+            std_value_list.append(std_value)
+            train_features_list.append(field_name)
     df.to_csv('./data/test_with_our_model.csv', index=False)
     train_list_x_df["unique_per_num_values"] = unique_per_num_values_list
     train_list_x_df["unique_value_size"] = unique_value_size_list
