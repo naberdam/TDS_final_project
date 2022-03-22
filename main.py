@@ -71,7 +71,6 @@ def convert_json_to_csv(data: dict, field_list: list, add_features_to_csv=False)
                         df_temp = df_temp.drop(field_name, axis=1)
                         del y_list[-1]
                         continue
-                print(f'{file_name}_{field_name}    {df_temp[field_name].unique()}')
                 df[f'{file_name}_{field_name}'] = df_temp[field_name]
                 unique_per_num_values = df_temp[field_name].unique().size / df_temp[field_name].count()
                 unique_value_size = df_temp[field_name].unique().size
