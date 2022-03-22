@@ -4,8 +4,8 @@ LotFrontage,1
 LotArea,1
 OverallQual,0
 OverallCond,0
-YearBuilt,1
-YearRemodAdd,1
+YearBuilt,0
+YearRemodAdd,0
 MasVnrArea,1
 BsmtFinSF1,1
 BsmtFinSF2,1
@@ -23,7 +23,7 @@ BedroomAbvGr,1
 KitchenAbvGr,1
 TotRmsAbvGrd,1
 Fireplaces,1
-GarageYrBlt,1
+GarageYrBlt,0
 GarageCars,1
 GarageArea,1
 WoodDeckSF,1
@@ -33,7 +33,7 @@ EnclosedPorch,1
 ScreenPorch,1
 PoolArea,1
 MoSold,0
-YrSold,1
+YrSold,0
 SalePrice,1
 CLIENTNUM,1
 Customer_Age,1
