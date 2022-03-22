@@ -63,9 +63,9 @@ def create_test_list(data: dict, field_list: list):
     return train_list_x_df, train_features_list
 
 
-def get_predictions(train_list_x, train_features_list):
-    reconstructed_model = tf.keras.models.load_model("./data/data_type_identifier.h5")
-    predictions = reconstructed_model.predict(train_list_x)
+def get_predictions(model_path, train_list_x, train_features_list):
+    model = tf.keras.models.load_model(model_path)
+    predictions = model.predict(train_list_x)
     results = {}
     for field_name, is_integer in zip(train_features_list, predictions):
         if is_integer > 0.5:
@@ -79,5 +79,6 @@ if __name__ == '__main__':
     test_datasets = load_datasets()
     test_relevant_columns = get_relevant_columns_from_test_sets(test_datasets)
     test_list, features_list = create_test_list(test_datasets, test_relevant_columns)
-    test_accuracy = get_predictions(test_list.to_numpy(), features_list)
+    test_accuracy = get_predictions("./data/data_type_identifier.h5",
+                                    test_list.to_numpy(), features_list)
     print(check_accuracy(test_accuracy, TEST_Y_PATH))
