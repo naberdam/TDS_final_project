@@ -35,3 +35,16 @@ def load_datasets():
     return {'house_prices': house_prices, 'bank_churners': bank_churners,
             'student_mat': student_mat, 'food_coded': food_coded}
 
+
+def check_accuracy(results, test_y_path):
+    with open(test_y_path, 'r') as readfile:
+        accuracy = 0
+        reader = csv.reader(readfile)
+        row_count = 0
+        for row in reader:
+            row_count += 1
+            if row[0] in results and results[row[0]] == int(row[1]):
+                accuracy += 1
+        accuracy /= row_count
+    return accuracy
+

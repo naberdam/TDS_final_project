@@ -1,5 +1,5 @@
 import csv
-from utils import load_datasets, get_relevant_columns_from_test_sets
+from utils import load_datasets, get_relevant_columns_from_test_sets, check_accuracy
 
 INTEGER = 1
 CATEGORICAL = 0
@@ -19,19 +19,6 @@ def test_with_threshold(datasets, relevant_columns, threshold):
         results.update(test_with_threshold_on_single_dataset(datasets[dataset_name][relevant_columns[dataset_name]],
                                                              threshold))
     return results
-
-
-def check_accuracy(results, test_y_path):
-    with open(test_y_path, 'r') as readfile:
-        accuracy = 0
-        reader = csv.reader(readfile)
-        row_count = 0
-        for row in reader:
-            row_count += 1
-            if results[row[0]] == int(row[1]):
-                accuracy += 1
-        accuracy /= row_count
-    return accuracy
 
 
 if __name__ == '__main__':
