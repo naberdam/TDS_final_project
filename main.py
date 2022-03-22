@@ -45,8 +45,8 @@ def shuffle(train_x, train_y):
 
 def convert_json_to_csv(data: dict, field_list: list):
     df = pd.DataFrame(columns=field_list)
-    train_list_x = []
-    train_list_y = []
+    # train_list_x = []
+    # train_list_y = []
     # train_list_x_df = pd.DataFrame(columns=['unique_per_num_values', 'std_value', "unique_value_size"])
     train_list_x_df = pd.DataFrame(columns=['unique_per_num_values', 'std_value', "unique_value_size", "min_value",
                                             "max_value"])
@@ -55,13 +55,12 @@ def convert_json_to_csv(data: dict, field_list: list):
     unique_value_size_list = []
     std_value_list = []
     y_list = []
-    min_value = []
-    max_value = []
-    is_integer = False
+    min_value_list = []
+    max_value_list = []
     for file_name in data:
         if file_name in ["Midwest_Survey_nominal", "usp05"]:
             continue
-        df_temp = pd.read_csv(f'{file_name}.csv', keep_default_na=False, low_memory=False)
+        df_temp = pd.read_csv(f'data/train_raw_datasets/{file_name}.csv', keep_default_na=False, low_memory=False)
         df_temp = df_temp.replace({'\'': ''}, regex=True)
         for field_name in df_temp:
             if f'{file_name}_{field_name}' in field_list:
@@ -73,27 +72,25 @@ def convert_json_to_csv(data: dict, field_list: list):
                     df_temp[field_name] = df_temp[field_name].replace(
                         [x.lower() for x in data[file_name][f'{file_name}_{field_name}']],
                         list(range(1, len(data[file_name][f'{file_name}_{field_name}']) + 1)))
-                    train_list_y.append(CATEGORIAL)
+                    # train_list_y.append(CATEGORIAL)
                     y_list.append(CATEGORIAL)
-                    is_integer = False
                 else:
-                    train_list_y.append(INTEGER)
+                    # train_list_y.append(INTEGER)
                     y_list.append(INTEGER)
-                    is_integer = True
                 df_temp[field_name] = pd.to_numeric(df_temp[field_name], errors='coerce')
                 if any(math.isnan(unique_value) for unique_value in df_temp[field_name].unique()):
                     df_temp[field_name] = df_temp[field_name].dropna().reset_index(drop=True)
                     if df_temp[field_name].empty:
                         df_temp = df_temp.drop(field_name, axis=1)
                         del y_list[-1]
-                        del train_list_y[-1]
+                        # del train_list_y[-1]
                         continue
                 print(f'{file_name}_{field_name}    {df_temp[field_name].unique()}')
                 df[f'{file_name}_{field_name}'] = df_temp[field_name]
                 unique_per_num_values = df_temp[field_name].unique().size / df_temp[field_name].count()
                 unique_value_size = df_temp[field_name].unique().size
-                x = df_temp[field_name].min()
-                y = df_temp[field_name].max()
+                min_value = df_temp[field_name].min()
+                max_value = df_temp[field_name].max()
                 df_temp[field_name] = (df_temp[field_name] - df_temp[field_name].min()) / \
                                       (df_temp[field_name].max() - df_temp[field_name].min())
                 std_value = df_temp[field_name].std()
@@ -103,8 +100,8 @@ def convert_json_to_csv(data: dict, field_list: list):
                     del y_list[-1]
                     del train_list_y[-1]
                     continue
-                min_value.append(x)
-                max_value.append(y)
+                min_value_list.append(min_value)
+                max_value_list.append(max_value)
                 # train_list_x.append([unique_per_num_values, min_value, max_value, std_value])
                 train_list_x.append([unique_per_num_values, unique_value_size, std_value])
                 unique_per_num_values_list.append(unique_per_num_values)
@@ -118,8 +115,8 @@ def convert_json_to_csv(data: dict, field_list: list):
     train_list_x_df["unique_per_num_values"] = unique_per_num_values_list
     train_list_x_df["unique_value_size"] = unique_value_size_list
     train_list_x_df["std_value"] = std_value_list
-    train_list_x_df["min_value"] = min_value
-    train_list_x_df["max_value"] = max_value
+    train_list_x_df["min_value"] = min_value_list
+    train_list_x_df["max_value"] = max_value_list
     train_list_x_df.to_csv('train_list_x.csv', index=False)
     train_list_y_df.to_csv('train_list_y.csv', index=False)
     # return np.array(train_list_x), np.array(train_list_y)
@@ -142,6 +139,10 @@ def sigmoid_neuron(X, y, path, epoch, validation_split, batch_size):
     model.save(path)
     print("model saved to " + str(path))
     return model
+
+
+def predict_on_model(model_path):
+    pass
 
 
 if __name__ == '__main__':
